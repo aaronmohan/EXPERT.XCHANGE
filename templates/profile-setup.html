@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Setup - Expert.Xchange</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: #f5f7fb;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 28px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        input[type="text"],
+        input[type="tel"],
+        input[type="email"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #2a7de1;
+        }
+        
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        
+        .skills-container {
+            margin-bottom: 20px;
+        }
+        .skill-entry {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .skill-entry input[type="text"] {
+            flex: 2;
+        }
+        .skill-entry select {
+            flex: 1;
+        }
+        .add-skill-btn, .remove-skill-btn {
+            background-color: #2a7de1;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .remove-skill-btn {
+            background-color: #dc3545;
+        }
+        .add-skill-btn:hover {
+            background-color: #1c68c5;
+        }
+        .remove-skill-btn:hover {
+            background-color: #c82333;
+        }
+        
+        .submit-button {
+            background-color: #2a7de1;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+        
+        .submit-button:hover {
+            background-color: #1c68c5;
+        }
+        
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .skill-tag {
+            background-color: #f0f4ff;
+            color: #2a7de1;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .remove-skill {
+            cursor: pointer;
+            color: #dc3545;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .skills-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="profile-setup-form">
+            <h1>Complete Your Profile</h1>
+            <form action="save-profile.php" method="POST" id="profileForm">
+                <div class="form-group">
+                    <label for="phone_number">Phone Number</label>
+                    <input type="tel" id="phone_number" name="phone_number" required placeholder="Enter your phone number">
+                </div>
+                
+                <div class="form-group">
+                    <label for="qualification">Qualification</label>
+                    <input type="text" id="qualification" name="qualification" required placeholder="e.g., Master's in Computer Science">
+                </div>
+                
+                <div class="form-group">
+                    <label for="experience_level">Overall Experience Level</label>
+                    <select id="experience_level" name="experience_level" required>
+                        <option value="">Select your experience level</option>
+                        <option value="Beginner">Beginner</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Advanced">Advanced</option>
+                        <option value="Expert">Expert</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Skills</label>
+                    <div class="skills-container" id="skillsContainer">
+                        <div class="skill-entry">
+                            <input type="text" name="skill_names[]" placeholder="Enter skill name" required>
+                            <select name="skill_levels[]" required>
+                                <option value="">Select proficiency</option>
+                                <option value="Beginner">Beginner</option>
+                                <option value="Intermediate">Intermediate</option>
+                                <option value="Advanced">Advanced</option>
+                                <option value="Expert">Expert</option>
+                            </select>
+                            <button type="button" class="remove-skill-btn" onclick="removeSkill(this)">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="button" class="add-skill-btn" onclick="addSkill()">
+                        <i class="fas fa-plus"></i> Add Another Skill
+                    </button>
+                </div>
+                
+                <button type="submit" class="submit-button">Complete Profile</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        function addSkill() {
+            const container = document.getElementById('skillsContainer');
+            const skillEntry = document.createElement('div');
+            skillEntry.className = 'skill-entry';
+            skillEntry.innerHTML = `
+                <input type="text" name="skill_names[]" placeholder="Enter skill name" required>
+                <select name="skill_levels[]" required>
+                    <option value="">Select proficiency</option>
+                    <option value="Beginner">Beginner</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Advanced">Advanced</option>
+                    <option value="Expert">Expert</option>
+                </select>
+                <button type="button" class="remove-skill-btn" onclick="removeSkill(this)">
+                    <i class="fas fa-minus"></i>
+                </button>
+            `;
+            container.appendChild(skillEntry);
+        }
+
+        function removeSkill(button) {
+            const container = document.getElementById('skillsContainer');
+            if (container.children.length > 1) {
+                button.parentElement.remove();
+            } else {
+                alert('You must have at least one skill entry.');
+            }
+        }
+
+        // Add form submission handler
+        document.getElementById('profileForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const button = this.querySelector('button[type="submit"]');
+            const originalText = button.textContent;
+            button.disabled = true;
+            button.textContent = 'Saving...';
+
+            try {
+                const formData = new FormData(this);
+                const response = await fetch('save-profile.php', {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+                
+                if (!data.success) {
+                    throw new Error(data.error || 'Failed to save profile');
+                }
+
+                // Show success message before redirect
+                alert('Profile saved successfully!');
+                
+                // Redirect to profile page
+                window.location.href = data.redirect;
+            } catch (error) {
+                console.error('Error:', error);
+                alert(error.message || 'Failed to save profile. Please try again.');
+                button.disabled = false;
+                button.textContent = originalText;
+            }
+        });
+    </script>
+</body>
+</html>

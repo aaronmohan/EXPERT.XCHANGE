@@ -1,0 +1,28 @@
+# Virtual environments
+venv/
+.venv/
+ENV/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IDE configurations
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Database backups / logs
+*.log
+*.sql.bak
+dump.rdb
+
+# OS files
+.DS_Store
+Thumbs.db
